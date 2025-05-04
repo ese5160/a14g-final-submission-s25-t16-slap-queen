@@ -21,6 +21,53 @@ Youtube Link:
 
 ## 4. Project Photos & Screenshots
 
+The final project:
+
+![1](images/1.png)
+
+![1](images/2.png)
+
+Standalone PCBA:
+
+![1](images/3.png)
+
+![1](images/4.png)
+
+Thermal camera image:
+
+![1](images/thermal.jpeg)
+
+Altium Board Design (2D):
+
+![1](images/5.png)
+
+
+Altium Board Design (3D):
+
+![1](images/6.png)
+
+![1](images/7.png)
+
+
+Node-Red Dashboard:
+
+![1](images/8.png)
+
+Node-Red backend:
+
+![1](images/9.png)
+
+![1](images/10.png)
+
+![1](images/11.png)
+
+![1](images/12.png)
+
+
+
+Block Diagram:
+
+![1](images/13.png)
 
 ## Codebase
 
