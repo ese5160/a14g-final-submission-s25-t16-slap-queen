@@ -15,6 +15,26 @@ Youtube Link:
 
 ## 2. Project Summary
 
+### Device Description:
+
+* This device is a system for nucleic acid amplification and end-point fluorescence detection. It allows users to control and monitor temperature, fluorescence intensity, and test results in real time through a Wi-Fi–based web interface.
+* We were inspired by the need for low-cost, portable molecular diagnostic tools suitable for point-of-care testing. Traditional fluorescence-based detection systems are often bulky and expensive, so we aimed to develop a compact, battery-powered solution that enables accessible and automated nucleic acid testing.
+* The device connects to a local Wi-Fi network and communicates with a Node-RED–based web dashboard via MQTT. This enables remote control of heating, LED excitation, and data acquisition, as well as real-time visualization of temperature, fluorescence intensity, and diagnostic results.
+
+### Device Functionality:
+
+
+### Challenges:
+
+
+### Prototype Learnings:
+
+
+### Next Steps & Takeaways:
+
+
+### Project Links:
+
 
 ## 3. Hardware & Software Requirements
 
