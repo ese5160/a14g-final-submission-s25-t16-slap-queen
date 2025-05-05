@@ -12,7 +12,6 @@
 
 Youtube Link:
 
-
 ## 2. Project Summary
 
 ### Device Description:
@@ -23,18 +22,86 @@ Youtube Link:
 
 ### Device Functionality:
 
+* Our Internet-connected device is built around a SAMD21 microcontroller and a WINC1500 Wi-Fi module, enabling MQTT-based communication with a Node-RED dashboard. Upon connecting to a Wi-Fi network, the device can receive control commands and upload data including temperature, fluorescence intensity, and diagnostic results. The Node-RED interface also supports firmware updates and system monitoring.
+* The device includes several key components:
+
+  * A **heating pad** controlled via PWM and monitored using a **MAX31855 SPI-based thermocouple sensor** for temperature feedback.
+  * A  **WS2812B RGB LED** , controlled by an  **ESP32-S3 via I2C** , provides blue light excitation for fluorescent dye.
+  * A **VEML7700 I2C light sensor** detects end-point fluorescence intensity in the PCR tube.
+  * Power is supplied by a  **4.2V LiPo battery** , stepped up to 5V and down to 3.3V via boost and buck converters.
+  * All components are housed in a custom mechanical structure that ensures proper alignment between the LED, sensor, and PCR tube.
+* System-level block diagram:
+
+  ![1](images/14.png)
 
 ### Challenges:
 
+**Problem 1:**
+
+The I2C bus on the PCBA was non-functional; the light sensor soldered onto the board could not be initialized.
+
+**Solution:**
+A logic analyzer showed that the SCL line was stuck high while SDA functioned normally, indicating a likely manufacturing defect. We desoldered the sensor and rerouted SDA and SCL to a breadboard, where communication worked. All I2C devices were moved off-board.
+
+**Problem 2:**
+The RGB LED could not be controlled via the PCBA; the GPIO output pin did not respond.
+
+**Solution:**
+After confirming that the control code worked on the SAMW25 dev board, we suspected a broken trace on the PCBA. As the pin lacked a test point, we used an ESP32-S3 to control the LED via PWM and sent I2C commands from the PCBA to the ESP32 for indirect control.
+
+**Problem 3:**
+The SPI-based temperature sensor only returned valid data during the first read after reset, and failed afterward.
+
+**Solution:**
+We identified a conflict between the SPI clock and FreeRTOS scheduling. Instead of delaying, we reinitialized and disabled the SPI peripheral for every temperature read, making each access act as a fresh initialization.
+
+**Problem 4:**
+The USB-to-Serial chip was incorrectly flipped in the PCB layout, making it impossible to solder.
+
+**Solution:**
+We used nearby test points for TxD and RxD to connect an external USB-to-Serial adapter and restored communication successfully.
+
+**Problem 5:**
+The J-Link debugger could not detect the PCBA because the debugger port was miswired—pin 3 was incorrectly connected to 5V instead of GND.
+
+**Solution:**
+We checked the schematic and compared it with the reference design, then used a drill to cut the 5V via, left pin 3 floating, and manually rewired it to GND using solder.
+
+**Problem 6:**
+I2C devices could be initialized under FreeRTOS, but failed to return data during normal execution.
+
+**Solution:**
+Tracealyzer revealed that the Wi-Fi task consumed most CPU time. After increasing the priority of the I2C task, communication worked reliably.
 
 ### Prototype Learnings:
 
+* **What lessons did you learn by building and testing this prototype?**
+
+  We learned the critical importance of validating hardware interfaces—especially I2C and SPI—early in the prototyping process, ideally with external dev boards and logic analyzers before committing to custom PCB designs. We also gained experience in designing modular firmware using FreeRTOS and understanding how task priorities and peripheral initialization timing affect system behavior. Moreover, we realized the value of including test points and debugging access for every critical signal.
+* **What would you do differently if you had to build this device again?**
+
+  If we were to build the device again, we would revise the PCB layout to ensure all important I/O pins have test points, avoid flipping parts during layout without clear markings, and double-check all power and signal routing. We would also consider moving RGB LED control off the main MCU from the beginning to simplify timing constraints. Finally, we would design the system with more flexible debugging and firmware update paths, such as integrated USB-to-serial and software-controlled SPI/I2C reinitialization.
 
 ### Next Steps & Takeaways:
 
+* **What steps are needed to finish or improve this project?**
+  To improve the project, we plan to redesign the PCB to address hardware limitations such as improper I2C routing, missing test points, and misoriented components. We will not only add test points for I2C and SPI lines but also include external port connectors to facilitate easier debugging. From a firmware perspective, instead of only displaying the end-point fluorescence result, we will implement real-time fluorescence intensity curve plotting to provide users with more informative and traceable data. We also plan to replace the 4.2V LiPo battery with a 12V power adapter, since the current battery cannot reliably support heating functions for extended use—a fresh battery only lasts for about 1.5 hours over 5–6 uses. Furthermore, we aim to improve system reliability by refining power management and integrating a more robust firmware update mechanism.
+* **What did you learn in ESE5160 through the lectures, assignments, and this course-long prototyping project?**
+  One of the most valuable lessons from ESE5160 was learning to design and implement a bootloader. Like a gatekeeper, the bootloader allows for crucial pre-checks before launching the main application, which helps avoid hard-to-diagnose initialization issues and enables wireless firmware updates with greater flexibility and safety. Beyond the technical skills, the most impactful takeaway was developing a problem-solving and debugging mindset. Through observing the TAs, I learned that systematic debugging is a logical process driven by experience—knowing what to check first and why. This course gave us not just the tools, but the thinking framework to face real-world engineering challenges with confidence.
 
 ### Project Links:
 
+Node Red backend:
+
+http://52.151.18.200:1880/#flow/66f671320a5098f3
+
+Node Red UI:
+
+http://52.151.18.200:1880/ui/#!/2?socketid=uGIgYGEi1WTffyEBAABM
+
+Altium Link:
+
+https://upenn-eselabs.365.altium.com/designs/9CF3F784-0CCA-4230-B525-11A20F8A1D04
 
 ## 3. Hardware & Software Requirements
 
@@ -114,13 +181,11 @@ Altium Board Design (2D):
 
 ![1](images/5.png)
 
-
 Altium Board Design (3D):
 
 ![1](images/6.png)
 
 ![1](images/7.png)
-
 
 Node-Red Dashboard:
 
@@ -135,8 +200,6 @@ Node-Red backend:
 ![1](images/11.png)
 
 ![1](images/12.png)
-
-
 
 Block Diagram:
 
