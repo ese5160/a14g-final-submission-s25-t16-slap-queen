@@ -12,6 +12,8 @@
 
 Youtube Link:
 
+https://youtu.be/pzpXFrXEU1Y
+
 ## 2. Project Summary
 
 ### Device Description:
